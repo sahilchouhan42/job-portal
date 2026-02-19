@@ -24,7 +24,7 @@ export const register = async (req, res) => {
             role
         })
 
-        return res.status(201).json(new ApiResponse(201, "User Registered Successfully"))
+        return res.status(201).json(new ApiResponse(201, "User Registered Successfully", user))
     } catch (error) {
         console.log(error.message)
         return res.status(500).json(new ApiResponse(500, "Internal Server Error"))
@@ -72,25 +72,27 @@ export const updateProfile = async (req, res)=>{
     try {
         const {fullName, email, phoneNumber, bio, skills} = req.body
         const file = req.file
-        if(!fullName||!email||!phoneNumber||!bio||!skills){
-            return res.status(400).json(new ApiResponse(400, "All fields are required"))
-        }
+        // if(!fullName||!email||!phoneNumber||!bio||!skills){
+        //     return res.status(400).json(new ApiResponse(400, "All fields are required"))
+        // }
 
         //cloudinary is here
 
-
-        const skillsArray = skills.split(",")
+        let skillsArray;
+        if(skills){
+            skillsArray = skills.split(",")
+        }
         const userId = req.id; //middleware authentication
 
         let user = await User.findById(userId)
         if(!user) return res.status(400).json(new ApiResponse(400, "User not found"))
         
         //updating user info
-        user.fullName = fullName;
-        user.email = email;
-        user.phoneNumber = phoneNumber;
-        user.profile.bio = bio;
-        user.profile.skills = skillsArray
+        if(fullName) user.fullName = fullName;
+        if(email) user.email = email;
+        if(phoneNumber) user.phoneNumber = phoneNumber;
+        if(bio) user.profile.bio = bio;
+        if(skills) user.profile.skills = skillsArray
 
         //resume comes later here
 
