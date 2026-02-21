@@ -49,3 +49,22 @@ export const getCompanyById = async (req, res)=>{
         return res.status(500).json(new ApiResponse(500, "Internal Server Error"))
     }
 }
+
+export const updateCompany = async (req, res)=>{
+    try {
+        const{name, description, website, location} = req.body
+        const file = req.file
+        //cloudinary later
+
+        const updateData = {name, description, website, location}
+
+        const company = await Company.findByIdAndUpdate(req.params.id, updateData, {new: true})
+
+        if(!company) return res.status(400).json(new ApiResponse(400, "Company not found"))
+
+        return res.status(200).json(new ApiResponse(200, "Company Updated Successfully", company))
+    } catch (error) {
+        console.log(error.message)
+        return res.status(500).json(new ApiResponse(500, "Internal Error"))
+    }
+}
