@@ -79,3 +79,5 @@ export const getAdminJobs = async (req, res)=>{
         return res.status(500).json(new ApiResponse(500, "Internal Server Error"))
     }
 }
+
+
